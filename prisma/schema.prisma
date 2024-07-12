@@ -13,10 +13,113 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  DOCTOR
+  SECRETARY
+}
+
+enum AppointmentStatus {
+  PENDING // the date of appointment is not yet
+  FULLFILLED // the appointment date is yet
+  DONE // the appointment is done by doctor
+  CANCELED // the appointment is canceled
+}
+
+enum BillingStatus {
+  PAID // The payment for the billing record has been completed.
+  PARTIALLY_PAID // The payment has been partially completed, and some amount is still outstanding.
+  OVERDUE // The payment was not made by the due date and is now overdue.
+  // PENDING
+  REFUNDED // The payment was made but has been refunded to the client.
+  CANCELED // The billing record has been cancelled, and no payment is required.
+}
+
 model User {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  email       String
-  phoneNumber String @default("00-000-000")
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  email       String     @unique
+  phoneNumber String     @default("00-000-000")
   username    String
   fullname    String?
+  role        Role
+  doctorId    String?    @unique @db.ObjectId
+  doctor      Doctor?
+  secretaryId String?    @unique @db.ObjectId
+  secretary   Secretary?
+  createdAt   DateTime   @default(now()) @db.Date
+  updatedAt   DateTime   @default(now()) @updatedAt @db.Date
+}
+
+model Doctor {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  speciality      String
+  userId          String        @unique @db.ObjectId
+  user            User          @relation(fields: [userId], references: [id])
+  appointments    Appointment[]
+  Billings        Billing[]
+  locationAddress String?
+  bio             String?
+  description     String?
+  secretaryId     String?       @unique @db.ObjectId
+  secretary       Secretary?
+  // thumbnail       Efile?
+  createdAt       DateTime      @default(now()) @db.Date
+  updatedAt       DateTime      @default(now()) @updatedAt @db.Date
+}
+
+model Secretary {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId  String   @unique @db.ObjectId
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  userId    String   @unique @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  bio       String?
+  // thumbnail       Efile?
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @default(now()) @updatedAt @db.Date
+}
+
+model Client {
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  email            String?
+  phoneNumber      String           @default("00-000-000")
+  medicalHistories MedicalHistory[]
+  appointments     Appointment[]
+  billings          Billing[]
+  createdAt        DateTime         @default(now()) @db.Date
+  updatedAt        DateTime         @default(now()) @updatedAt @db.Date
+}
+
+model MedicalHistory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  clientId    String   @db.ObjectId
+  client      Client   @relation(fields: [clientId], references: [id])
+  appointment DateTime @db.Date
+  description String?
+  // documents  Efile[]
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @default(now()) @updatedAt @db.Date
+}
+
+model Appointment {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  clientId  String            @db.ObjectId
+  client    Client            @relation(fields: [clientId], references: [id])
+  doctorId  String            @db.ObjectId
+  doctor    Doctor            @relation(fields: [doctorId], references: [id])
+  date      DateTime
+  status    AppointmentStatus
+  createdAt DateTime          @default(now()) @db.Date
+  updatedAt DateTime          @default(now()) @updatedAt @db.Date
+}
+
+model Billing {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId  String   @db.ObjectId
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  clientId  String   @db.ObjectId
+  Client    Client   @relation(fields: [clientId], references: [id])
+  ammount   Int      @default(0)
+  dueDate   DateTime @db.Date
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @default(now()) @updatedAt @db.Date
 }
