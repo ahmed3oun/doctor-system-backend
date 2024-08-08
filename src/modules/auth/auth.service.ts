@@ -1,4 +1,6 @@
+import { SigninDTO, SigninResponse, User } from '@app/common';
 import { Injectable } from '@nestjs/common';
+import argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 // import { CreateAuthDto } from './dto/create-auth.dto';
 // import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -8,8 +10,21 @@ export class AuthService {
 
   constructor(private readonly prismaService: PrismaService) { }
 
-  login(loginDto: any) {
-    return "Logged in successfully!"
+  async signIn(body: SigninDTO) : Promise<SigninResponse | any>{
+    const _user = await this.prismaService.user.findUniqueOrThrow({
+      where : {
+        email: body.login
+      }
+    });
+    // const pwd_matches = argon.verify(_user.password)
+    // const pwdMatches = await argon.verify(
+    //   user,
+    //   body.password,
+    // );
+    return {
+      // user,
+      message: "Logged in successfully!"
+    }
   }
 
 
