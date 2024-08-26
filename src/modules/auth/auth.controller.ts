@@ -14,8 +14,8 @@ import {
 // import { CreateAuthDto } from './dto/create-auth.dto';
 // import { UpdateAuthDto } from './dto/update-auth.dto';
 import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
-import { SigninDTO, SigninResponse } from '@app/common';
+import { Response } from 'express';
+import { SigninReqDTO, SigninResDTO, SignupResDTO } from '@app/common';
 
 @Controller('auth')
 export class AuthController {
@@ -23,23 +23,34 @@ export class AuthController {
 
   @Post('/signin')
   async signIn(
-    // @Req() request: Request,
-    @Body() body: SigninDTO,
+    @Body() body: SigninReqDTO,
     @Res() response: Response
-  ) {
+  ): Promise<Response<SigninResDTO>> {
     try {
-      const _response: SigninResponse = await this.authService.signIn(body);
-      
-      return response.status(200).send({
-        ..._response
+      const res: SigninResDTO = await this.authService.signIn(body);
+
+      return response.status(res.status).send({
+        ...res
       })
     } catch (error) {
       if (error.code === 'P2025') {
         throw new NotFoundException('This email address doesn\'t exists in database');
       } else {
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(error.message);
       }
     }
+  }
+
+  @Post('/signup')
+  async signUp(
+    @Body() body,
+    @Res() response: Response
+  ): Promise<Response<SignupResDTO>> { 
+    const res = await this.authService.signUp(body);
+
+    return response.status(res.status).send({
+      ...res
+    })
   }
 
   /* @Post()

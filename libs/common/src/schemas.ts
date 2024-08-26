@@ -1,88 +1,105 @@
-import { AppointmentStatus, Role } from "./constants";
+import { EAppointmentStatus, ERole } from "./enums";
 
-export interface User {
+export interface IUser {
     id?: string;
     email: string;
+    password?: string;
     phoneNumber: string;
     username: string;
     fullname?: string;
-    role: Role;
+    role: ERole;
     doctorId?: string;
-    doctor?: Doctor;
+    doctor?: IDoctor;
     secretaryId?: string;
-    secretary?: Secretary;
+    secretary?: ISecretary;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface Doctor {
+export interface IDoctor {
     id?: string;
     speciality: string;
     userId?: string;
-    user?: User;
+    user?: IUser;
     secretaryId?: string;
-    secretary?: Secretary;
+    secretaries?: ISecretary[];
+    thumbnail?: string;
     locationAddress?: string;
     bio?: string;
     description?: string;
-    appointments?: Appointment[];
-    billings?: Billing[];
+    appointments?: IAppointment[];
+    billings?: IBilling[];
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface Secretary {
+export interface ISecretary {
     id?: string;
     doctorId?: string;
-    doctor?: Doctor;
+    doctor?: IDoctor;
     userId?: string;
-    user?: User;
+    user?: IUser;
     bio?: string;
+    thumbnail?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface Client {
+export interface IClient {
     id?: string;
     email?: string;
     phoneNumber?: string;
-    medicalHistories?: MedicalHistory[];
-    appointments?: Appointment[];
-    billings?: Billing[];
+    medicalHistories?: IMedicalHistory[];
+    appointments?: IAppointment[];
+    billings?: IBilling[];
+    thumbnail?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface Appointment {
+export interface IAppointment {
     id?: string;
     clientId?: string;
-    client?: Client;
+    client?: IClient;
     doctorId?: string;
-    doctor?: Doctor;
+    doctor?: IDoctor;
     date: Date;
-    status: AppointmentStatus;
+    status: EAppointmentStatus;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface Billing {
+export interface IBilling {
     id?: string;
     clientId?: string;
-    client?: Client;
+    client?: IClient;
     doctorId?: string;
-    doctor?: Doctor;
+    doctor?: IDoctor;
     ammount: number;
     dueDate: Date;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface MedicalHistory {
+export interface IMedicalHistory {
     id?: string;
     clientId?: string;
-    client?: Client;
+    client?: IClient;
     appointment: Date;
     description: string;
+    documents?: string[]
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface IEfile {
+    id?: string;
+    file_title: string;
+    file_type: string;
+    file_name: string;
+    original_name: string;
+    file_size: number;
+    url: string;
     createdAt?: Date;
     updatedAt?: Date;
 }

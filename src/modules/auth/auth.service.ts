@@ -1,50 +1,65 @@
-import { SigninDTO, SigninResponse, User } from '@app/common';
-import { Injectable } from '@nestjs/common';
+import { SigninReqDTO, SigninResDTO, IUser, SignupReqDTO, SignupResDTO } from '@app/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
-// import { CreateAuthDto } from './dto/create-auth.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly jwtService: JwtService
+  ) { }
 
-  constructor(private readonly prismaService: PrismaService) { }
-
-  async signIn(body: SigninDTO) : Promise<SigninResponse | any>{
-    const _user = await this.prismaService.user.findUniqueOrThrow({
-      where : {
+  async signIn(body: SigninReqDTO): Promise<SigninResDTO> {
+    const current_user = await this.prismaService.user.findUniqueOrThrow({
+      where: {
         email: body.login
       }
-    });
-    // const pwd_matches = argon.verify(_user.password)
-    // const pwdMatches = await argon.verify(
-    //   user,
-    //   body.password,
-    // );
+    }) as IUser;
+    const pwd_matches = await argon.verify(current_user.password, body.password);
+    if (!pwd_matches) {
+      throw new BadRequestException('Bad Credentials');
+    }
+
+    delete current_user.password;
+
+    const payload = {
+      id: current_user.id,
+      username: current_user.username,
+      email: current_user.email,
+    };
+
+    const token = await this.jwtService.signAsync(payload);
+
     return {
-      // user,
-      message: "Logged in successfully!"
+      user: current_user,
+      token,
+      message: "Logged in successfully!",
+      status: 200
     }
   }
 
+  async signUp(body: SignupReqDTO): Promise<SignupResDTO> {
+    const hashPassword = await argon.hash(body.password)
 
-  /* create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+    const saved_user = this.prismaService.user.create({
+      data: {
+        email: body.email,
+        password: hashPassword,
+        username: body.username,
+        phoneNumber: body.phoneNumber,
+        role: "DOCTOR",
+        fullname: body.fullname
+      }
+    }) as unknown as IUser;
+
+    delete saved_user.password;
+
+    return {
+      user: saved_user,
+      message: "Registered successfully!",
+      status: 201
+    }
   }
-
-  findAll() {
-    return `This action returns all auths`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #id auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #id auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #id auth`;
-  } */
 }
