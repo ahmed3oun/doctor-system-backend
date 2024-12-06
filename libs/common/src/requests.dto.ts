@@ -1,8 +1,10 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, Length } from "class-validator";
-// import { ERole } from './enums';
+import { ERole } from "./enums";
 
+/***
+ *  Auth Module
+ */
 export class SigninReqDTO {
-
     @IsNotEmpty()
     @IsEmail()
     login: string;
@@ -13,7 +15,6 @@ export class SigninReqDTO {
 }
 
 export class SignupReqDTO {
-
     @IsNotEmpty()
     @IsEmail()
     email: string;
@@ -30,4 +31,11 @@ export class SignupReqDTO {
 
     @IsOptional()
     fullname?: string;
+
+    @IsNotEmpty()
+    role: ERole;
 }
+
+/***
+ *  User Module
+ */

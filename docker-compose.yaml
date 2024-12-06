@@ -1,0 +1,32 @@
+services:
+  mongodb:
+    container_name: mongodb-dev
+    image: mongo:latest
+    volumes:
+      - './mongo_volume:/data/db'
+    ports:
+      - '27017:27017'
+    command: ["mongod", "--replSet", "rs0", "--noauth"]
+
+  server:
+    container_name: doctor-sys-backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    env_file:
+      - ./.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 4000:4000
+    depends_on:
+      mongodb:
+        condition: service_started
+    entrypoint: /bin/sh -c "npx prisma generate && npm run start:dev"
+
+volumes:
+  mongo_volume:
+    driver: local

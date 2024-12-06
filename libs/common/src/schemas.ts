@@ -1,105 +1,108 @@
-import { EAppointmentStatus, ERole } from "./enums";
+import { EAppointmentStatus, EBillingStatus, ERole } from "@app/common";
 
-export interface IUser {
+
+interface IBase {
     id?: string;
+    created_at?: Date;
+    updated_at?: Date;
+}
+
+export interface IUser extends IBase {
     email: string;
-    password?: string;
-    phoneNumber: string;
+    password: string;
+    phone_number: string;
     username: string;
     fullname?: string;
     role: ERole;
-    doctorId?: string;
+    doctor_id?: string;
     doctor?: IDoctor;
-    secretaryId?: string;
+    secretary_id?: string;
     secretary?: ISecretary;
-    createdAt?: Date;
-    updatedAt?: Date;
+    patient_id?: string;
+    patient?: IPatient;
 }
 
-export interface IDoctor {
-    id?: string;
+export interface IDoctor extends IBase {
     speciality: string;
-    userId?: string;
+    user_id?: string;
     user?: IUser;
-    secretaryId?: string;
+    secretaries_ids?: string[];
     secretaries?: ISecretary[];
     thumbnail?: string;
-    locationAddress?: string;
+    location_address?: string;
     bio?: string;
     description?: string;
+    appointments_ids: string[];
     appointments?: IAppointment[];
+    billings_ids: string[];
     billings?: IBilling[];
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
-export interface ISecretary {
-    id?: string;
-    doctorId?: string;
+export interface ISecretary extends IBase {
+    doctor_id?: string;
     doctor?: IDoctor;
-    userId?: string;
+    user_id?: string;
     user?: IUser;
     bio?: string;
     thumbnail?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
-export interface IClient {
-    id?: string;
-    email?: string;
-    phoneNumber?: string;
-    medicalHistories?: IMedicalHistory[];
+export interface IPatient extends IBase {
+    medical_histories_ids?: string[];
+    medical_histories?: IMedicalHistory[];
+    medical_information_id?: string;
+    medical_information?: IMedicalInformation;
+    appointments_ids?: IAppointment[];
     appointments?: IAppointment[];
     billings?: IBilling[];
     thumbnail?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    user_id?: string;
+    user?: IUser;
 }
 
-export interface IAppointment {
-    id?: string;
-    clientId?: string;
-    client?: IClient;
-    doctorId?: string;
+export interface IAppointment extends IBase {
+    patient_id?: string;
+    patient?: IPatient;
+    doctor_id?: string;
     doctor?: IDoctor;
     date: Date;
     status: EAppointmentStatus;
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
-export interface IBilling {
-    id?: string;
-    clientId?: string;
-    client?: IClient;
-    doctorId?: string;
+export interface IBilling extends IBase {
+    patient_id?: string;
+    patient?: IPatient;
+    doctor_id?: string;
     doctor?: IDoctor;
     ammount: number;
-    dueDate: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
+    due_date: Date;
+    status: EBillingStatus
 }
 
-export interface IMedicalHistory {
-    id?: string;
-    clientId?: string;
-    client?: IClient;
+export interface IMedicalInformation extends IBase {
+    insurance_provider?: string;
+    insurance_policy_num?: string;
+    allergies: string[];
+    current_medication: string[];
+    family_medical_history: string;
+    past_medical_history: string;
+    patient: IPatient;
+    patient_id: string;
+}
+
+export interface IMedicalHistory extends IBase {
+    patient_id?: string;
+    patient?: IPatient;
     appointment: Date;
     description: string;
     documents?: string[]
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
-export interface IEfile {
-    id?: string;
+export interface IEfile extends IBase {
     file_title: string;
     file_type: string;
     file_name: string;
     original_name: string;
     file_size: number;
     url: string;
-    createdAt?: Date;
-    updatedAt?: Date;
 }

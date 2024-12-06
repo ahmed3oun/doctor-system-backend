@@ -1,15 +1,18 @@
-import { IUser } from "./schemas";
+import { IUser } from "@app/common";
 
-interface BaseRes {
+interface IBaseRes {
   message?: string;
   status?: number;
 }
 
-export  interface SigninResDTO extends BaseRes {
+/***
+ *  Auth Module
+ */
+export  interface SigninResDTO extends IBaseRes {
   user: IUser;
   token: string;
 }
 
-export  interface SignupResDTO extends BaseRes {
+export  interface SignupResDTO extends IBaseRes {
   user: IUser;
 }
