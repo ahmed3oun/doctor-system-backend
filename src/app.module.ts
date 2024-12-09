@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { DatabaseModule } from '@app/common';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { join } from 'path';
         expiresIn: process.env.JWT_EXPIRY,
       },
     }),
+    DatabaseModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
       exclude: ['/api/(.*)'],

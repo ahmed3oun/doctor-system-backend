@@ -26,7 +26,16 @@
       ],
       "@src/*": [
         "src/*"
-      ]
+      ],
+      "@schemas/*": [
+        "src/schemas/*"
+      ],
+      "@schemas": [
+        "src/schemas"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ],
     }
   }
 }
