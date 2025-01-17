@@ -1,8 +1,6 @@
 import {
   Body,
   Controller,
-  InternalServerErrorException,
-  NotFoundException,
   Post,
   Res,
 } from '@nestjs/common';
@@ -22,11 +20,7 @@ export class AuthController {
         ...res
       });
     } catch (error) {
-      if (error.code === 'P2025') {
-        throw new NotFoundException('This email address doesn\'t exists in database');
-      } else {
-        throw new InternalServerErrorException(error.message);
-      }
+      throw error;
     }
   }
 
@@ -39,7 +33,7 @@ export class AuthController {
         ...res
       })
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw error;
     }
   }
 }

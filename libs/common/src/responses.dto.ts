@@ -1,4 +1,4 @@
-import { IUser } from "@app/common";
+import { User } from "@src/schemas";
 
 interface IBaseRes {
   message?: string;
@@ -9,10 +9,19 @@ interface IBaseRes {
  *  Auth Module
  */
 export  interface SigninResDTO extends IBaseRes {
-  user: IUser;
+  user: User;
   token: string;
 }
 
 export  interface SignupResDTO extends IBaseRes {
-  user: IUser;
+  user: User;
+}
+/***
+ *  User Module
+ */
+export  interface GetMeResDTO extends IBaseRes {
+  user: User;
+}
+export  interface GetUserResDTO extends IBaseRes {
+  user: User;
 }

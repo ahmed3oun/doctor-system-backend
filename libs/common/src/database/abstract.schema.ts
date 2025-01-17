@@ -13,9 +13,11 @@ export class AbstractDocument {
     _id: Types.ObjectId;
 
     @Prop({ Type: Boolean, default: false })
-    isDeleted: boolean;
+    isDeleted?: boolean;
 
-    created_at: Date;
-
-    updated_at: Date;
+    @Prop({ type: Date })
+    created_at?: Date;
+    
+    @Prop({ type: Date })
+    updated_at?: Date;
 }

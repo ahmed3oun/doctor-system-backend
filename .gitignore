@@ -2,7 +2,8 @@
 /dist
 /node_modules
 /mongo_volume
-
+/mongo_volume/*
+mongo_volume/*
 # Logs
 logs
 *.log

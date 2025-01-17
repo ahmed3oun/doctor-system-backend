@@ -52,9 +52,10 @@ export interface IPatient extends IBase {
     medical_histories?: IMedicalHistory[];
     medical_information_id?: string;
     medical_information?: IMedicalInformation;
-    appointments_ids?: IAppointment[];
+    appointments_ids?: string[];
     appointments?: IAppointment[];
     billings?: IBilling[];
+    billings_ids?: string[];
     thumbnail?: string;
     user_id?: string;
     user?: IUser;

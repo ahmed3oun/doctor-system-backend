@@ -2,26 +2,27 @@ import { SigninReqDTO, SigninResDTO, IUser, SignupReqDTO, SignupResDTO } from '@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
 import * as argon from 'argon2';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { UserRepository } from '../user/user.repository';
+import { Doctor, Patient, Secretary } from '@src/schemas';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prismaService: PrismaService,
+    private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService
   ) { }
 
   async signIn(body: SigninReqDTO): Promise<SigninResDTO> {
-    const current_user = await this.prismaService.user.findUniqueOrThrow({
-      where: {
-        email: body.login
-      }
-    }) as unknown as IUser;
+    const current_user = await this.userRepository.findOne({ email: body.login })
 
-    const pwd_matches = await argon.verify(current_user.password, body.password);
+    if (!current_user) {
+      throw new BadRequestException('Bad Credentials');
+    }
+    const pwd_matches = await argon.verify(current_user.password, body.password)
     if (!pwd_matches) {
       throw new BadRequestException('Bad Credentials');
     }
@@ -29,7 +30,7 @@ export class AuthService {
     delete current_user.password;
 
     const payload = {
-      id: current_user.id,
+      id: current_user._id,
       username: current_user.username,
       email: current_user.email,
     };
@@ -48,34 +49,40 @@ export class AuthService {
   }
 
   async signUp(body: SignupReqDTO): Promise<SignupResDTO> {
-    const current_user = await this.prismaService.user.findFirst({
-      where: {
-        email: body.email
+    const session = await this.userRepository.startTransaction();
+    try {
+      const current_user = await this.userRepository.findOne({ email: body.email });
+
+      if (current_user) {
+        throw new BadRequestException(`This mail address ${body.email} is already existed!`);
       }
-    }) as unknown as IUser;
 
-    if (current_user) {
-      throw new BadRequestException(`This mail address ${body.email} is already existed!`);
-    }
 
-    const hashPassword = await argon.hash(body.password)
-    const saved_user = await this.prismaService.user.create({
-      data: {
+      const hashPassword = await argon.hash(body.password)
+
+      const saved_user = await this.userRepository.create({
         email: body.email,
         password: hashPassword,
         username: body.username,
         phone_number: body.phoneNumber,
-        role: body.role as Role,
-        fullname: body.fullname
+        role: body.role,
+        fullname: body.fullname,
+      })
+
+
+      await session.commitTransaction();
+
+      delete saved_user.password;
+      delete saved_user.isDeleted;
+
+      return {
+        user: saved_user,
+        message: "Registered successfully!",
+        status: 201
       }
-    }) as unknown as IUser;
-
-    delete saved_user.password;
-
-    return {
-      user: saved_user,
-      message: "Registered successfully!",
-      status: 201
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
     }
   }
 }

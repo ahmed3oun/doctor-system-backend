@@ -30,5 +30,6 @@
 **/values.dev.yaml
 **/build
 **/dist
+**/mongo_volume
 LICENSE
 README.md
