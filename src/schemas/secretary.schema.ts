@@ -1,13 +1,16 @@
 import { AbstractDocument } from "@app/common";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Types } from "mongoose";
+import { Doctor } from "./doctor.schema";
+import { User } from "./user.schema";
 
 @Schema({ versionKey: false })
 export class Secretary extends AbstractDocument {
-    @Prop({ unique: true, type: String, ref: 'Doctor' })
-    doctor_id: string;
+    @Prop({ unique: true, type: Types.ObjectId, ref: 'Doctor' })
+    doctor: Doctor;
 
-    @Prop({ unique: true, type: String, ref: 'User' })
-    user_id: string;
+    @Prop({ unique: true, type: Types.ObjectId, ref: 'User' })
+    user: User;
 
     @Prop()
     bio?: string;

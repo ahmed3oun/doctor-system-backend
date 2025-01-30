@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedExceptio
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { UserRepository } from '@modules/user/user.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '@src/schemas';
 import { Model } from 'mongoose';

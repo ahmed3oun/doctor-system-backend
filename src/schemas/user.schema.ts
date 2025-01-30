@@ -22,7 +22,7 @@ export class User extends AbstractDocument {
     fullname?: string;
 
     @Prop({ enum: ["DOCTOR", "PATIENT", "SECRETARY", "ADMIN"] })
-    role: "DOCTOR" | "PATIENT" | "SECRETARY" | "ADMIN"/* ERole */;
+    role: /* "DOCTOR" | "PATIENT" | "SECRETARY" | "ADMIN" */ERole;
 
     @Prop({ type: Types.ObjectId, ref: 'Doctor' })
     doctor?: Doctor;

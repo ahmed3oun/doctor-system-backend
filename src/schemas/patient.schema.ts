@@ -1,6 +1,11 @@
 import { AbstractDocument } from "@app/common";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
+import { MedicalInformation } from "./medical-information.schema";
+import { Billing } from "./billing.schema";
+import { Appointment } from "./appointment.schema";
+import { User } from "./user.schema";
+import { MedicalHistory } from "./medical-history.schema";
 
 @Schema({ versionKey: false })
 export class Patient extends AbstractDocument {
@@ -10,20 +15,20 @@ export class Patient extends AbstractDocument {
     @Prop()
     thumbnail?: string;
 
-    @Prop({ unique: true, type: String, ref: 'MedicalInformation'})
-    medical_information?: string;
+    @Prop({ unique: true, type: Types.ObjectId, ref: 'MedicalInformation'})
+    medical_information?: MedicalInformation;
 
     @Prop({ type: [Types.ObjectId], ref: 'Billing' })
-    billings_ids?: string[];
+    billings?: Billing[];
 
     @Prop({ type: [Types.ObjectId], ref: 'Appointment' })
-    appointments_ids?: string[]
+    appointments?: Appointment[]
 
     @Prop({ type: [Types.ObjectId], ref: 'MedicalHistory' })
-    medical_histories_ids?: string[]
+    medical_histories?: MedicalHistory[]
 
-    @Prop({ unique: true, type: String, ref: 'User' })
-    user_id: string;
+    @Prop({ unique: true, type: Types.ObjectId, ref: 'User' })
+    user: User;
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

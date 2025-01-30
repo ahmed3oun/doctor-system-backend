@@ -17,7 +17,7 @@ export class AbstractDocument {
 
     @Prop({ type: Date })
     created_at?: Date;
-    
+
     @Prop({ type: Date })
     updated_at?: Date;
 }
