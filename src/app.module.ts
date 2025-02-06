@@ -8,12 +8,13 @@ import { UserModule } from './modules/user/user.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { DatabaseModule } from '@app/common';
+import { MailingModule } from './modules/mailing/mailing.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
-    // PrismaModule,
+    MailingModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './.env'

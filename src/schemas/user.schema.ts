@@ -1,8 +1,7 @@
 import { AbstractDocument, ERole } from "@app/common";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Doctor } from "./doctor.schema";
 import { Types } from "mongoose";
-import { Secretary } from "./secretary.schema";
+import { Secretary, Doctor } from "@src/schemas";
 
 @Schema({ versionKey: false })
 export class User extends AbstractDocument {
@@ -21,8 +20,17 @@ export class User extends AbstractDocument {
     @Prop()
     fullname?: string;
 
-    @Prop({ enum: ["DOCTOR", "PATIENT", "SECRETARY", "ADMIN"] })
+    @Prop({ enum: ["DOCTOR", "PATIENT", "SECRETARY", "ADMIN"], type: String })
     role: /* "DOCTOR" | "PATIENT" | "SECRETARY" | "ADMIN" */ERole;
+
+    @Prop({ default: false })
+    is_verified: boolean;
+
+    @Prop({ default: false })
+    is_completed: boolean;
+
+    @Prop({ unique: true })
+    confirmation_token: string;
 
     @Prop({ type: Types.ObjectId, ref: 'Doctor' })
     doctor?: Doctor;

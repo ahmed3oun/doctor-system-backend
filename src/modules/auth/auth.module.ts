@@ -5,6 +5,7 @@ import { DatabaseModule } from '@app/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '@schemas';
 import { UserRepository } from '../user/user.repository';
+import { MailingService } from '@src/modules/mailing/mailing.service';
 @Module({
   imports: [
     DatabaseModule,
@@ -13,7 +14,7 @@ import { UserRepository } from '../user/user.repository';
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserRepository],
+  providers: [AuthService, UserRepository, MailingService],
   exports: [AuthModule]
 })
 export class AuthModule { }

@@ -17,7 +17,7 @@ export class Billing extends AbstractDocument {
     @Prop()
     due_date: Date;
 
-    @Prop({ enum: ["PAID", "PARTIALLY_PAID", "OVERDUE", "REFUNDED", "CANCELED"] })
+    @Prop({ enum: ["PAID", "PARTIALLY_PAID", "OVERDUE", "REFUNDED", "CANCELED"], type: String })
     status: EBillingStatus;
 }
 

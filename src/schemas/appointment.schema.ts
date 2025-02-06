@@ -14,7 +14,7 @@ export class Appointment extends AbstractDocument {
     @Prop()
     date: Date;
 
-    @Prop({ enum: ["PENDING", "FULLFILLED", "DONE", "CANCELED"] })
+    @Prop({ enum: ["PENDING", "FULLFILLED", "DONE", "CANCELED"], type: String })
     status: EAppointmentStatus;
 }
 

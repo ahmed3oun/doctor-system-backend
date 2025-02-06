@@ -1,16 +1,19 @@
 import {
   Body,
   Controller,
+  Patch,
   Post,
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { SigninReqDTO, SigninResDTO, SignupReqDTO, SignupResDTO } from '@app/common';
+import { SigninReqDTO, SigninResDTO, SignupReqDTO, ConfirmReqDTO } from '@app/common';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(
+    private readonly authService: AuthService,
+  ) { }
 
   @Post('/signin')
   async signIn(@Body() body: SigninReqDTO, @Res() response: Response) {
@@ -32,6 +35,20 @@ export class AuthController {
       return response.status(res.status).send({
         ...res
       })
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Patch('/confirm')
+  async confirmUser(@Body() body: ConfirmReqDTO, @Res() response: Response) {
+    try {
+      // > This is the controller method that handles the user confirmation. to be continued ...
+      const res = await this.authService.confirmUser(body);
+
+      return response.status(res.status).send({
+        ...res
+      });
     } catch (error) {
       throw error;
     }

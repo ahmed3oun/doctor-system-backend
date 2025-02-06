@@ -36,6 +36,11 @@ export class SignupReqDTO {
     role: ERole;
 }
 
+export class ConfirmReqDTO {
+    @IsNotEmpty()
+    token: string;
+}
+
 /***
  *  User Module
  */

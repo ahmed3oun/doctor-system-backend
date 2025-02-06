@@ -16,6 +16,10 @@ export  interface SigninResDTO extends IBaseRes {
 export  interface SignupResDTO extends IBaseRes {
   user: User;
 }
+
+export  interface ConfirmResDTO extends IBaseRes {
+  user: User;
+}
 /***
  *  User Module
  */

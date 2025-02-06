@@ -1,9 +1,7 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { Doctor } from './doctor.schema';
-import { Patient } from './patient.schema';
-
+import { Doctor, Patient } from '@src/schemas';
 
 @Schema({ versionKey: false })
 export class MedicalHistory extends AbstractDocument {

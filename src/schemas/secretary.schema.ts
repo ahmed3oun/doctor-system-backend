@@ -1,8 +1,7 @@
 import { AbstractDocument } from "@app/common";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
-import { Doctor } from "./doctor.schema";
-import { User } from "./user.schema";
+import { Doctor, User } from "@src/schemas";
 
 @Schema({ versionKey: false })
 export class Secretary extends AbstractDocument {
