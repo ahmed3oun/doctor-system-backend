@@ -9,7 +9,7 @@ export const MailerConfig = MailerModule.forRoot({
   transport: {
     host: configService.getOrThrow('SMTP_HOST'),
     port: configService.getOrThrow('SMTP_PORT'),
-    secure: false, // true for 465, false for other ports
+    secure: true, // true for 465, false for other ports
     auth: {
       user: configService.getOrThrow('SMTP_USER'),
       pass: configService.getOrThrow('SMTP_PASSWORD'),

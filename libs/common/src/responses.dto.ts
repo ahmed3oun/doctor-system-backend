@@ -29,3 +29,9 @@ export  interface GetMeResDTO extends IBaseRes {
 export  interface GetUserResDTO extends IBaseRes {
   user: User;
 }
+
+export interface UpdateUserResDTO extends IBaseRes {
+  user: User
+}
+
+export interface UpdatePasswordResDTO extends IBaseRes {}

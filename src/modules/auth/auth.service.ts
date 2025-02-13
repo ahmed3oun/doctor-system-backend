@@ -74,8 +74,8 @@ export class AuthService {
         is_verified: false,
         is_completed: false
       })
-
-      await this.mailingService.sendUserConfirmation(saved_user.email, saved_user.username, saved_user.confirmation_token);
+      // TODO: Uncomment this line after implementing mailing service
+      // await this.mailingService.sendUserConfirmation(saved_user.email, saved_user.username, saved_user.confirmation_token);
       await session.commitTransaction();
 
       delete saved_user.password;

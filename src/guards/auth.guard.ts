@@ -30,16 +30,16 @@ export class AuthGuard implements CanActivate {
         secret: this.config.getOrThrow('JWT_SECRET')
       });
       let current_user;
-
-      switch ((await this.userModel.findOne({ _id: payload.id })).role) {
+      const curr_user = await this.userModel.findOne({ _id: payload.id });
+      switch (curr_user.role) {
         case 'DOCTOR':
-          current_user = await current_user.populate('Doctor').exec()
+          current_user = curr_user?.doctor ? await curr_user.populate('Doctor') : curr_user as User;
         case 'SECRETARY':
-          current_user = await current_user.populate('Secretary').exec()
+          current_user = curr_user?.secretary ? await current_user.populate('Secretary') : curr_user as User;
         case 'PATIENT':
-          current_user = await current_user.populate('Patient').exec()
+          current_user = curr_user?.patient ? await current_user.populate('Patient').exec() : curr_user as User;
         default:
-          current_user = await current_user;
+          current_user = await curr_user;
       }
       delete current_user.created_at;
       delete current_user.updated_at;

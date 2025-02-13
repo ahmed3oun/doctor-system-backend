@@ -1,19 +1,19 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Res } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Res, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@src/guards';
 import { CurrentUser } from '@src/decorators';
 import { User } from '@src/schemas';
 import { Response } from 'express';
-import { GetMeResDTO, GetUserResDTO } from '@app/common';
+import { GetMeResDTO, GetUserResDTO, UpdateUserReqDTO, UpdateUserResDTO } from '@app/common';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.userService.findAll();
+  // }
 
   @UseGuards(AuthGuard)
   @Get('me')
@@ -44,9 +44,23 @@ export class UserController {
     }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: any) {
-    return this.userService.update(id, updateUserDto);
+  @UseGuards(AuthGuard)
+  @Put(':me')
+  async update(
+    @CurrentUser() _user: User,
+    @Body() body: UpdateUserReqDTO,
+    @Res() response: Response<UpdateUserResDTO>
+  ) {
+    try {
+      const user = await this.userService.update(_user, body) as User;
+      return response.status(200).send({
+        message: 'User profile updated successfully!',
+        status: 200,
+        user
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Delete(':id')
