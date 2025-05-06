@@ -5,6 +5,14 @@ import { Request } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '@src/schemas';
 import { Model } from 'mongoose';
+// import { IUser } from '@app/common';
+
+// declare global {
+//   namespace Express
+//     interface Request {
+//       user?: IUser;
+//     }
+// }
 
 @Injectable()
 export class AuthGuard implements CanActivate {
